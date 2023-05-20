@@ -120,6 +120,7 @@ Licence URI: https://www.os-templates.com/template-terms
             "Venez à moi, vous tous qui etes fatigués et chargés et je vous
             donnerai du repos"
           </h3>
+          <% if (!user) { %>
           <footer>
             <ul class="nospace inline pushright">
               <li><a class="btn" href="/connexion">Se connecter</a></li>
@@ -128,6 +129,13 @@ Licence URI: https://www.os-templates.com/template-terms
               </li>
             </ul>
           </footer>
+          <%}else { %>
+          <footer>
+            <ul class="nospace inline pushright">
+              <li><a class="btn" href="/user">Dashboard</a></li>
+            </ul>
+          </footer>
+          <%} %>
         </article>
         <!-- ################################################################################################ -->
       </div>

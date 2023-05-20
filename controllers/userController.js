@@ -7,8 +7,8 @@ var jwt = require("jsonwebtoken");
 
 const UserController = class {
   //Afficher la page d'accueil
-  // static getHome = (req, res) => {
-  //   res.render("accueil");
+  // static getUser = (req, res) => {
+  //   res.render("userPage")
   // };
 
   //Afficher la page de lutilisateur
@@ -18,7 +18,6 @@ const UserController = class {
     // if (user) {
     //   const users = await User.findById(user.id);
     //   res.json({ Users: users });
-    //   res.render("userPage", {users})
     // }
     // const token = req.headers.authorization.split(" ")[1];
     res.render("user/index");
@@ -38,6 +37,11 @@ const UserController = class {
   // User Contact
   static getUserContact = (req, res) => {
     res.render("user/pages-contact");
+  };
+
+  // User Discution
+  static getUserDiscution = (req, res) => {
+    res.render("user/pages-discution");
   };
 
   // User Table data
@@ -94,13 +98,14 @@ const UserController = class {
             });
           } else {
             const hashPassword = bcrypt.hashSync(password, salt);
-            // console.log("Password hash", hashPassword);
+            console.log("Password hash", hashPassword);
             const user = new User({
               nom,
               prenom,
               email: email.toLowerCase(),
               password: hashPassword,
             });
+            console.log("user", user);
             user
               .save()
               .then(() => {
@@ -128,6 +133,33 @@ const UserController = class {
     res.render("connexionForm", { message: "", userinfos: "", error_msg: "" });
   };
 
+  // Edit User
+  static EditUserProfile = (req, res) => {
+    const id = req.body.id;
+    const user = {
+      userprofile: req.file.filename,
+      nom: req.body.nom,
+      prenom: req.body.prenom,
+      country: req.body.country,
+      address: req.body.address,
+      phone: req.body.phone,
+      email: req.body.email,
+      twitter: req.body.twitter,
+      facebook: req.body.facebook,
+      instagram: req.body.instagram,
+      linkedin: req.body.linkedin
+    }
+    User.findByIdAndUpdate(id, {$set: user}).then(() => {
+      console.log("User update");
+    }).catch((err) => {
+      console.log("Update Error",err);
+    });
+
+    // console.log(req.body);
+    // console.log(req.file);
+    // console.log("req.file");
+  };
+
   //Connecter un utilisateur
   static userConnexion = async (req, res) => {
     const errors = validationResult(req);
@@ -143,49 +175,39 @@ const UserController = class {
     } else {
       let user = await User.findOne({ email });
 
-      if (user && bcrypt.compareSync(password, user.password)) {
-        const token = jwt.sign(
-          {
-            id: user._id,
-            // email: user.email,
-            // prenom: user.prenom,
-          },
-          process.env.SECRET_TOKEN,
-          { expiresIn: "2h" }
-        );
+      if (user) {
+        if (bcrypt.compareSync(password, user.password)) {
+          const token = jwt.sign(
+            {
+              id: user._id,
+              // email: user.email,
+              // prenom: user.prenom,
+            },
+            process.env.SECRET_TOKEN,
+            { expiresIn: "2d" }
+          );
 
-        // save user token
-        res.cookie("jwt", token, {
-          httpOnly: true,
-          maxAge: 1000 * 60 * 60 * 24,
-        });
-
-        // localStorage.setItem("Token", token)
-
-        // save user token
-        // req.token = token;
-        // res.status(200).json({ token: token, user: user });
-        // res.render("userPage");
-        // console.log("user with token", user);
-
-        // console.log("User infos", user, token);
-        res.redirect("/user");
-      } else {
-        const error_msg = "Email ou mot de passe incorrecte";
-        console.log("Email ou mot de passe incorrect", user);
-        res.render("connexionForm", {
-          error_msg,
-          message: "",
-          userinfos: req.body,
-        });
+          // save user token
+          res.cookie("jwt", token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+          });
+          res.redirect("/user");
+        } else {
+          const error_msg = "Email ou mot de passe incorrecte";
+          res.render("connexionForm", {
+            error_msg,
+            message: "",
+            userinfos: req.body,
+          });
+        }
       }
-
-      // .then((result) => {
-      //   console.log("result", result);
-      // })
-      // .catch((err) => {
-      //   console.log(err);
-      // });
+      const error_msg = "Votre email n'existe pas, créez un compte";
+      res.render("connexionForm", {
+        error_msg,
+        message: "",
+        userinfos: req.body,
+      });
     }
   };
 };

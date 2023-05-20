@@ -1039,6 +1039,8 @@ h6 {
   color: rgba(1, 41, 112, 0.6);
 }
 
+/* Profile */
+
 .profile .profile-edit label {
   font-weight: 600;
   color: rgba(1, 41, 112, 0.6);
@@ -1046,6 +1048,19 @@ h6 {
 
 .profile .profile-edit img {
   max-width: 120px;
+}
+
+.profile .profile-edit input[type="file"] {
+  height: 32px;
+  width: 32px;
+  position: absolute;
+  left: 0px;
+  opacity: 0;
+}
+
+.profile .profile-edit .uploadProfile{
+  overflow: hidden;
+  position: relative;
 }
 
 /*--------------------------------------------------------------

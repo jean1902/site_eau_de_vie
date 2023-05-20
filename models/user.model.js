@@ -8,6 +8,15 @@ const UserPost = new Schema(
     prenom: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    country: { type: String },
+    address: { type: String },
+    phone: { type: String },
+    email: { type: String },
+    twitter: { type: String },
+    facebook: { type: String },
+    instagram: { type: String },
+    linkedin: { type: String },
+    userprofile: { data: String, contentType: String },
   },
   { timestamps: true }
 );

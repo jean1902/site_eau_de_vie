@@ -15,8 +15,10 @@ const port = 3000 || process.env.PORT;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
 // middleware
 app.use(express.static("public"));
+app.use('/uploadImage', express.static('uploadImage'))
 
 // view engine
 app.set("views", "./views");
